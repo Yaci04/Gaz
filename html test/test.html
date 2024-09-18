@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Data</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        
+        .container {
+            margin-top: 20px;
+        }
+        
+        .navbar {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+        }
+        
+        .navbar a {
+            text-align: center;
+            color: #b30000;
+            text-decoration: none;
+            font-size: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+            padding: 10px 0;
+        }
+        
+        .navbar img {
+            width: 24px;
+            margin-bottom: 5px;
+            filter: brightness(0) saturate(100%) invert(31%) sepia(86%) saturate(3723%) hue-rotate(0deg) brightness(89%) contrast(105%);
+        }
+        
+        .navbar i {
+            font-size: 20px;
+        }
+        
+        .navbar a span {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .navbar a:hover {
+            background-color: #f0f0f0;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="mb-4">Daily Order Data</h1>
+        <table id="orderTable" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Total Amount</th>
+                    <th>12kg Sold</th>
+                    <th>6kg Sold</th>
+                    <th>3kg Sold</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data will be populated here by JavaScript -->
+            </tbody>
+        </table>
+    </div>
+    <div class="navbar">
+        <a href="index.html">
+            <i class="fas fa-home"></i>
+            <span>Accueil</span>
+        </a>
+        <a href="showdata.html">
+            <i class="fas fa-money-bill-wave"></i>
+            <span>Ventes d'aujourd'hui</span>
+        </a>
+        <a href="test.html">
+            <i class="fas fa-calendar-day"></i>
+            <span>Tableau d'aujourd'hui</span>
+        </a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Retrieve orders from localStorage
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            const orderTableBody = document.querySelector('#orderTable tbody');
+
+            // Object to hold daily totals
+            const dailyTotals = {};
+
+            // Process each order
+            orders.forEach(order => {
+                const date = order.dateTime.split('T')[0]; // Extract the date part only
+
+                if (!dailyTotals[date]) {
+                    dailyTotals[date] = {
+                        totalAmount: 0,
+                        total12kg: 0,
+                        total6kg: 0,
+                        total3kg: 0
+                    };
+                }
+
+                dailyTotals[date].totalAmount += parseFloat(order.totalAmount) || 0;
+                dailyTotals[date].total12kg += (order.quantities.q1 || 0);
+                dailyTotals[date].total6kg += (order.quantities.q2 || 0);
+                dailyTotals[date].total3kg += (order.quantities.q3 || 0);
+            });
+
+            // Populate the table with daily totals
+            for (const [date, totals] of Object.entries(dailyTotals)) {
+                const row = document.createElement('tr');
+
+                row.innerHTML = `
+            <td>${date}</td>
+            <td>${totals.totalAmount.toFixed(2)} DH</td>
+            <td>${totals.total12kg}</td>
+            <td>${totals.total6kg}</td>
+            <td>${totals.total3kg}</td>
+        `;
+
+                orderTableBody.appendChild(row);
+            }
+        });
+    </script>
+</body>
+
+</html>

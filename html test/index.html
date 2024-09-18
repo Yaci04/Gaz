@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <title>Gas Bottle Seller</title>
+    <style>
+        body {
+            margin: 0;
+            padding-bottom: 80px;
+            font-family: 'Poppins', sans-serif;
+            background-color: #dfdfdf;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 97%;
+            margin: 20px auto;
+            padding: 40px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        /* Heading */
+        
+        h1 {
+            text-align: center;
+            color: #b30000;
+            font-size: 36px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+            font-weight: 600;
+            margin-bottom: 20px;
+            font-family: 'Alata', sans-serif;
+            font-size: 36px;
+            letter-spacing: 1px;
+            line-height: 1.2;
+        }
+        
+        .info {
+            margin-bottom: 30px;
+        }
+        
+        .info label {
+            font-size: 16px;
+            color: #444;
+            display: block;
+            margin: 15px 0 5px;
+            font-weight: 500;
+        }
+        /* Input fields and select */
+        
+        input[type="text"],
+        input[type="datetime-local"] {
+            width: 100%;
+            padding: 15px;
+            margin-top: 5px;
+            font-size: 16px;
+            border: 1px solid #b30000;
+            border-radius: 10px;
+            background-color: #e7e7e7;
+            outline: none;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.8);
+            /* Subtle shadow */
+            transition: border-color 0.3s;
+        }
+        
+        select {
+            width: 100%;
+            padding: 15px 20px;
+            margin-top: 5px;
+            font-size: 16px;
+            border: 1px solid #b30000;
+            border-radius: 8px;
+            background-color: #e7e7e7;
+            transition: all 0.3s ease;
+            outline: none;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.8);
+            /* Subtle shadow */
+            height: 60px;
+        }
+        
+        input[type="text"]:focus,
+        input[type="datetime-local"]:focus,
+        select:focus {
+            border-color: none;
+            /* Main red color */
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+            /* Red focus shadow */
+        }
+        /* Gas bottle section */
+        
+        .bottle-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 20px 0;
+            padding: 20px;
+            border-bottom: 1px solid #b30000;
+        }
+        
+        .bottle-img {
+            width: 70px;
+            margin-right: 20px;
+        }
+        
+        .bottle-label {
+            font-size: 18px;
+            color: #b30000;
+            /* Main red color */
+            font-weight: bold;
+            margin-right: 20px;
+        }
+        /* Adding some space between the buttons and the input */
+        
+        .controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+        }
+        
+        .quantity-input {
+            width: 60px;
+            padding: 10px;
+            font-size: 16px;
+            text-align: center;
+            border: none;
+            border-radius: 8px;
+            background-color: #dfdfdf;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            margin: 0 15px;
+        }
+        
+        .quantity-input:focus {
+            border-color: #b30000;
+            box-shadow: 0 0 5px rgba(179, 0, 0, 0.3);
+        }
+        /* Total amount */
+        
+        .total {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 24px;
+            color: #333;
+        }
+        
+        .total span {
+            font-weight: bold;
+            font-size: 28px;
+            color: #b30000;
+            /* Main red color */
+        }
+        /* Footer and buttons */
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .footer button {
+            background-color: #b30000;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        
+        .footer button:hover {
+            background-color: #dfdfdf;
+            color: #b30000;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .footer button:active {
+            transform: scale(0.08);
+        }
+        /* Navbar styles */
+        
+        .navbar {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+        }
+        
+        .navbar i {
+            font-size: 20px;
+        }
+        
+        .navbar a {
+            text-align: center;
+            color: #b30000;
+            text-decoration: none;
+            font-size: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+            padding: 10px 0;
+        }
+        
+        .navbar img {
+            width: 24px;
+            margin-bottom: 5px;
+            filter: brightness(0) saturate(100%) invert(31%) sepia(86%) saturate(3723%) hue-rotate(0deg) brightness(89%) contrast(105%);
+        }
+        
+        .navbar a span {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .navbar a:hover {
+            background-color: #f0f0f0;
+            border-radius: 10px;
+        }
+        /* Style for the buttons (+ and -) */
+        
+        .button {
+            font-size: 20px;
+            color: white;
+            background-color: #b30000;
+            padding: 3px 15px;
+            border: none;
+            border-radius: 180px;
+            cursor: pointer;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        /* Hover and Active effects */
+        
+        .button:hover {
+            background-color: #a00000;
+            /* Darker shade of red */
+        }
+        
+        .button:active {
+            transform: scale(0.95);
+        }
+        /* Remove up and down arrows (spinners) in number input fields */
+        
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
+        .container {
+            margin-top: 50px;
+            max-width: 600px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background-color: #dfdfdf;
+        }
+        
+        h1 {
+            margin-bottom: 30px;
+        }
+        
+        .form-group label {
+            font-weight: bold;
+        }
+        
+        .form-control {
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            box-shadow: none;
+            transition: border-color 0.3s;
+        }
+        
+        .form-control:focus {
+            border-color: #b30000;
+            /* Main red color */
+            box-shadow: 0 0 5px rgba(179, 0, 0, 0.2);
+        }
+        
+        .result {
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+        
+        .btn-calculate {
+            background-color: #b30000;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+            width: 100%;
+        }
+        
+        .btn-calculate:hover {
+            background-color: #dfdfdf;
+            transform: scale(1.02);
+        }
+        /* Media query to hide text on mobile */
+        
+        @media (max-width: 768px) {
+            .navbar a span {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+
+    <div class="navbar">
+        <a href="index.html">
+            <i class="fas fa-home"></i>
+            <span>Accueil</span>
+        </a>
+        <a href="showdata.html">
+            <i class="fas fa-money-bill-wave"></i>
+            <span>Les Ventes </span>
+        </a>
+        <a href="test.html">
+            <i class="fas fa-calendar-day"></i>
+            <span>Le Tableau </span>
+        </a>
+    </div>
+    <div class="container">
+        <h1>Gas Bottle Seller</h1>
+        <form id="orderForm">
+            <div class="info">
+                <label>Client Name:
+                    <input type="text" id="clientName" placeholder="Enter client name">
+                </label>
+                <label>Time and Date:
+                    <input type="datetime-local" id="dateTime" readonly>
+                </label>
+                <label>Payment Method:
+                    <select id="paymentMethod" required data-toggle="tooltip" title="Choose how the payment will be made" style="margin-bottom: 20px;">
+                        <option value="cash" selected>Cash</option>
+                        <option value="recu">Recu</option>
+                    </select>
+                </label>
+            </div>
+
+            <!-- Gas Bottle 1 (12 kg) -->
+            <div class="bottle-container" style="border-top: 1px solid #b30000; padding:  20px;">
+                <img src="imgs/12.png" class="bottle-img" alt="Gas Bottle 1 (12kg)">
+                <div class="bottle-label">12 kg</div>
+                <div class="controls">
+                    <button type="button" class="button" onclick="updateQuantity('q1', -1, event)">-</button>
+                    <input type="number" class="quantity-input" id="q1" value="0" min="0" oninput="updateQuantityFromInput('q1', this.value)">
+                    <button type="button" class="button" onclick="updateQuantity('q1', 1, event)">+</button>
+                </div>
+            </div>
+
+            <!-- Gas Bottle 2 (6 kg) -->
+            <div class="bottle-container">
+                <img src="imgs/6.png" class="bottle-img" alt="Gas Bottle 2 (6kg)">
+                <div class="bottle-label">6 kg</div>
+                <div class="controls">
+                    <button type="button" class="button" onclick="updateQuantity('q2', -1, event)">-</button>
+                    <input type="number" class="quantity-input" id="q2" value="0" min="0" oninput="updateQuantityFromInput('q2', this.value)">
+                    <button type="button" class="button" onclick="updateQuantity('q2', 1, event)">+</button>
+                </div>
+            </div>
+
+            <!-- Gas Bottle 3 (3 kg) -->
+            <div class="bottle-container">
+                <img src="imgs/3.png" class="bottle-img" alt="Gas Bottle 3 (3kg)">
+                <div class="bottle-label">3 kg</div>
+                <div class="controls">
+                    <button type="button" class="button" onclick="updateQuantity('q3', -1, event)">-</button>
+                    <input type="number" class="quantity-input" id="q3" value="0" min="0" oninput="updateQuantityFromInput('q3', this.value)">
+                    <button type="button" class="button" onclick="updateQuantity('q3', 1, event)">+</button>
+                </div>
+            </div>
+            <!-- Total -->
+            <div class="total">Total: <span id="totalAmount">0 DH (0 ryal)</span></div>
+            <!-- Footer -->
+            <div class="footer">
+                <button type="submit">Confirm Order</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const prices = {
+            q1: 49,
+            q2: 24.5,
+            q3: 12.1,
+        }; // Prices for each gas bottle
+        let quantities = {
+            q1: 0,
+            q2: 0,
+            q3: 0
+        }; // Initial quantities
+
+        function updateTotal() {
+            let total = 0;
+            for (const [key, quantity] of Object.entries(quantities)) {
+                total += quantity * prices[key];
+            }
+            const roundedTotal = total.toFixed(2); // Round to 2 decimal places
+            const totalInRyal = (total * 20).toFixed(0); // Calculate and round the total in ryal
+            document.getElementById('totalAmount').textContent = `${roundedTotal} DH (${totalInRyal} ryal)`;
+        }
+
+        function confirmOrder() {
+            const clientName = document.getElementById('clientName').value;
+            const dateTime = document.getElementById('dateTime').value;
+            const paymentMethod = document.getElementById('paymentMethod').value;
+            const totalAmount = document.getElementById('totalAmount').textContent;
+
+            if (clientName && dateTime) {
+                // Create order data object
+                const orderData = {
+                    clientName: clientName,
+                    dateTime: dateTime,
+                    paymentMethod: paymentMethod,
+                    totalAmount: totalAmount,
+                    quantities: quantities // Quantities from your existing object
+                };
+
+                // Check if 'orders' exists in localStorage
+                let orders = JSON.parse(localStorage.getItem('orders')) || [];
+
+                // Add new order to the array
+                orders.push(orderData);
+
+                // Store updated orders array in LocalStorage
+                localStorage.setItem('orders', JSON.stringify(orders));
+
+                alert("Order confirmed and saved locally!");
+
+                // Reset the form fields and quantities without reloading the page
+                document.getElementById('clientName').value = '';
+                document.getElementById('paymentMethod').value = 'cash';
+
+                // Manually reset quantity inputs and update the display
+                document.getElementById('q1').value = 0;
+                document.getElementById('q2').value = 0;
+                document.getElementById('q3').value = 0;
+                quantities = {
+                    q1: 0,
+                    q2: 0,
+                    q3: 0
+                };
+                updateTotal();
+
+                // Re-set the date and time field to current time
+                const now = new Date();
+                const formattedDateTime = now.toISOString().slice(0, 16);
+                document.getElementById('dateTime').value = formattedDateTime;
+            } else {
+                const userConfirmed = confirm("Some required fields are missing. Are you sure you want to proceed?");
+
+                if (userConfirmed) {
+                    // Save the data if the user confirmed
+                    const orderData = {
+                        clientName: clientName,
+                        dateTime: dateTime,
+                        paymentMethod: paymentMethod,
+                        totalAmount: totalAmount,
+                        quantities: quantities // Quantities from your existing object
+                    };
+
+                    // Check if 'orders' exists in localStorage
+                    let orders = JSON.parse(localStorage.getItem('orders')) || [];
+
+                    // Add new order to the array
+                    orders.push(orderData);
+
+                    // Store updated orders array in LocalStorage
+                    localStorage.setItem('orders', JSON.stringify(orders));
+
+                    alert("Order confirmed and saved locally!");
+
+                    // Reset the form fields and quantities without reloading the page
+                    document.getElementById('clientName').value = '';
+                    document.getElementById('paymentMethod').value = 'cash';
+
+                    // Manually reset quantity inputs and update the display
+                    document.getElementById('q1').value = 0;
+                    document.getElementById('q2').value = 0;
+                    document.getElementById('q3').value = 0;
+                    quantities = {
+                        q1: 0,
+                        q2: 0,
+                        q3: 0
+                    };
+                    updateTotal();
+
+                    // Re-set the date and time field to current time
+                    const now = new Date();
+                    const formattedDateTime = now.toISOString().slice(0, 16);
+                    document.getElementById('dateTime').value = formattedDateTime;
+                } else {
+                    // Allow user to correct their input
+                    return;
+                }
+            }
+        }
+
+        function updateQuantityFromInput(id, value) {
+            // Ensure the value is a non-negative integer
+            const quantity = Math.max(0, parseInt(value, 10) || 0);
+            quantities[id] = quantity;
+            document.getElementById(id).value = quantity;
+            updateTotal();
+        }
+
+        // Function to increase or decrease the quantity
+        function updateQuantity(id, change, event) {
+            event.preventDefault(); // Prevent the default form submission behavior
+            quantities[id] = Math.max(0, quantities[id] + change); // Ensure quantity doesn't go below 0
+            document.getElementById(id).value = quantities[id];
+            updateTotal(); // Update the total amount display
+        }
+
+        document.getElementById('orderForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+            confirmOrder(); // Call the confirmOrder function to handle the order saving
+        });
+
+        // Automatically fill date and time on page load
+        window.onload = function() {
+            try {
+                const now = new Date();
+                const formattedDateTime = now.toISOString().slice(0, 16); // Format to yyyy-MM-ddTHH:mm
+                const dateTimeField = document.getElementById('dateTime');
+
+                if (dateTimeField) {
+                    dateTimeField.value = formattedDateTime;
+                } else {
+                    console.error("DateTime input field not found.");
+                }
+            } catch (error) {
+                console.error("Error setting date and time:", error);
+            }
+        };
+    </script>
+
+</body>
+
+</html>

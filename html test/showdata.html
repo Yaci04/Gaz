@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historique des Commandes</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding-bottom: 80px;
+            font-family: 'Poppins', sans-serif;
+            background-color: #dfdfdf;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 100%;
+            margin: 20px auto;
+            padding: 40px;
+            background-color: #dfdfdf;
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #b30000;
+            font-size: 36px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+            font-weight: 600;
+            margin-bottom: 20px;
+            font-family: 'Alata', sans-serif;
+            letter-spacing: 1px;
+            line-height: 1.2;
+            margin-top: 30px;
+        }
+        
+        .card-header {
+            background-color: #b30000;
+            color: white;
+        }
+        
+        .card-footer {
+            text-align: right;
+        }
+        
+        .btn-delete {
+            background-color: #d9534f;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        
+        .btn-delete:hover {
+            background-color: #c9302c;
+            color: white;
+        }
+        
+        .btn-modify {
+            background-color: #dfdfdf;
+            color: black;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        
+        .btn-modify:hover {
+            background-color: white;
+        }
+        
+        .navbar {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+        }
+        
+        .navbar a {
+            text-align: center;
+            color: #b30000;
+            text-decoration: none;
+            font-size: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+            padding: 10px 0;
+        }
+        
+        .navbar img {
+            width: 24px;
+            margin-bottom: 5px;
+            filter: brightness(0) saturate(100%) invert(31%) sepia(86%) saturate(3723%) hue-rotate(0deg) brightness(89%) contrast(105%);
+        }
+        
+        .navbar i {
+            font-size: 20px;
+        }
+        
+        .navbar a span {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .navbar a:hover {
+            background-color: #f0f0f0;
+            border-radius: 10px;
+        }
+        
+        .total-card {
+            margin-bottom: 20px;
+        }
+        
+        .order-card {
+            margin-bottom: 80px;
+        }
+        
+        .table-borderless td {
+            border-bottom: 1px solid #dee2e6;
+            padding: 8px;
+        }
+        
+        .highlight {
+            font-weight: bold;
+            color: rgb(0, 0, 0);
+            padding: 5px;
+            border-radius: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .order-card {
+                margin-bottom: 80px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .card-body p {
+                font-size: 14px;
+            }
+            .navbar a span {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+
+    <div class="container">
+        <h1 class="text-center text-danger">Historique des Commandes</h1>
+        <div class="card total-card">
+            <div class="card-header">
+                Résumé des Totaux
+            </div>
+            <div class="card-body">
+                <table class="table table-borderless">
+                    <tbody>
+                        <tr>
+                            <td><strong>Total:</strong></td>
+                            <td id="totalAmount"></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Total 12kg:</strong></td>
+                            <td id="totalQ1"></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Total 6kg:</strong></td>
+                            <td id="totalQ2"></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Total 3kg:</strong></td>
+                            <td id="totalQ3"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Orders Cards -->
+        <div id="ordersContainer" class="row">
+            <!-- Order cards will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <div class="navbar">
+        <a href="index.html">
+            <i class="fas fa-home"></i>
+            <span>Accueil</span>
+        </a>
+        <a href="showdata.html">
+            <i class="fas fa-money-bill-wave"></i>
+            <span>Ventes d'aujourd'hui</span>
+        </a>
+        <a href="test.html">
+            <i class="fas fa-calendar-day"></i>
+            <span>Tableau d'aujourd'hui</span>
+        </a>
+    </div>
+
+    <script>
+        // Define the prices for each quantity type
+        const PRICE_12KG = 49; // Example price in DH
+        const PRICE_6KG = 24.5; // Example price in DH
+        const PRICE_3KG = 12.1; // Example price in DH
+
+        function formatDate(date) {
+            // Format the date as YYYY-MM-DD
+            const d = new Date(date);
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function calculateTotals() {
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            const today = new Date();
+            const todayDate = formatDate(today);
+
+            let totalAmountSum = 0;
+            let totalQ1Sum = 0;
+            let totalQ2Sum = 0;
+            let totalQ3Sum = 0;
+            let totalReceivedAmount = 0; // For orders with payment method "Reçu"
+
+            orders.forEach((order) => {
+                const orderDate = order.dateTime ? formatDate(order.dateTime.split('T')[0]) : null;
+
+                // Only include orders from today
+                if (orderDate === todayDate) {
+                    const totalAmount = (parseInt(order.quantities.q1) || 0) * PRICE_12KG +
+                        (parseInt(order.quantities.q2) || 0) * PRICE_6KG +
+                        (parseInt(order.quantities.q3) || 0) * PRICE_3KG;
+
+                    // Check payment method
+                    if (order.paymentMethod === "Reçu") {
+                        totalReceivedAmount += totalAmount;
+                    } else {
+                        totalAmountSum += totalAmount;
+                    }
+
+                    totalQ1Sum += parseInt(order.quantities.q1) || 0;
+                    totalQ2Sum += parseInt(order.quantities.q2) || 0;
+                    totalQ3Sum += parseInt(order.quantities.q3) || 0;
+                }
+            });
+
+            const totalInRiyals = totalAmountSum * 20; // Example conversion rate to Riyals
+
+            // Update the totals in the table
+            document.getElementById('totalAmount').innerHTML = `${totalAmountSum.toFixed(2)} DH (${totalInRiyals.toFixed(2)} ريال)`;
+            document.getElementById('totalQ1').textContent = totalQ1Sum;
+            document.getElementById('totalQ2').textContent = totalQ2Sum;
+            document.getElementById('totalQ3').textContent = totalQ3Sum;
+
+            // Add the 'highlight' class to the totals
+            document.getElementById('totalAmount').classList.add('highlight');
+            document.getElementById('totalQ1').classList.add('highlight');
+            document.getElementById('totalQ2').classList.add('highlight');
+            document.getElementById('totalQ3').classList.add('highlight');
+
+            // Update received amount in the summary
+            const receivedAmountDiv = document.getElementById('receivedAmount');
+            receivedAmountDiv.innerHTML = totalReceivedAmount > 0 ?
+                `<span style="color: red;">Reçu: ${totalReceivedAmount.toFixed(2)} DH</span>` :
+                '';
+        }
+
+        function loadOrders() {
+            const ordersContainer = document.getElementById('ordersContainer');
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            ordersContainer.innerHTML = '';
+
+            // Get today's date
+            const today = new Date();
+            const todayDate = formatDate(today);
+
+            orders.forEach((order, index) => {
+                        const orderDate = order.dateTime ? formatDate(order.dateTime.split('T')[0]) : null;
+
+                        // Only include orders from today
+                        if (orderDate === todayDate) {
+                            const dateTimeSplit = order.dateTime ? order.dateTime.split('T') : ['0', '0'];
+                            const date = dateTimeSplit[0] || '0';
+                            let time = dateTimeSplit[1] || '0';
+
+                            // Add 1 hour to the time
+                            if (time !== '0') {
+                                const timeParts = time.split(':');
+                                let hours = parseInt(timeParts[0], 10);
+                                let minutes = timeParts[1] || '00';
+
+                                hours = (hours + 1) % 24; // Add 1 hour, wrap around if necessary
+                                time = `${hours.toString().padStart(2, '0')}:${minutes}`;
+                            }
+
+                            // Calculate total amount
+                            const totalAmount = (parseInt(order.quantities.q1) || 0) * PRICE_12KG +
+                                (parseInt(order.quantities.q2) || 0) * PRICE_6KG +
+                                (parseInt(order.quantities.q3) || 0) * PRICE_3KG;
+
+                            const totalInRiyals = totalAmount * 20; // Example conversion rate to Riyals
+
+                            // Order card
+                            const orderCard = document.createElement('div');
+                            orderCard.className = 'col-md-6 order-card';
+
+                            orderCard.innerHTML = `
+                <div class="card">
+                    <div class="card-header">
+                        Commande ${index + 1}
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-sm">
+                            <tbody>
+                                <tr>
+                                    <td><i class="fas fa-user"></i> <strong>Nom:</strong></td>
+                                    <td>${order.clientName || '0'}</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fas fa-calendar-day"></i> <strong>Date:</strong></td>
+                                    <td>${date}</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fas fa-clock"></i> <strong>Temps:</strong></td>
+                                    <td>${time}</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fas fa-credit-card"></i> <strong>Paiement:</strong></td>
+                                    <td>${order.paymentMethod || '0'}</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fas fa-tag"></i> <strong>Total:</strong></td>
+                                    <td>${totalAmount.toFixed(2)} DH (${totalInRiyals.toFixed(2)} ريال)</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fas fa-box"></i> <strong>12kg:</strong></td>
+                                    <td>${order.quantities.q1 || '0'}</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fas fa-box"></i> <strong>6kg:</strong></td>
+                                    <td>${order.quantities.q2 || '0'}</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fas fa-box"></i> <strong>3kg:</strong></td>
+                                    <td>${order.quantities.q3 || '0'}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-delete" onclick="deleteOrder('${order.dateTime ? `order_${order.dateTime.replace(/[\W_]+/g, '')}` : `order_${index}`}')">
+                            <i class="fas fa-trash-alt"></i> Supprimer
+                        </button>
+                        <button class="btn btn-modify" onclick="modifyOrder(${index})">
+                            <i class="fas fa-edit"></i> Modifier
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            ordersContainer.appendChild(orderCard);
+        }
+    });
+
+    // Recalculate totals and update the summary
+    calculateTotals();
+}
+        function modifyOrder(index) {
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            const order = orders[index];
+
+            // Prompt the user for new values
+            const newClientName = prompt("Modifier le nom du client:", order.clientName || "");
+            const newPaymentMethod = prompt("Modifier le mode de paiement:", order.paymentMethod || "");
+            const newQ1 = prompt("Modifier le nombre de 12kg:", order.quantities.q1 || "");
+            const newQ2 = prompt("Modifier le nombre de 6kg:", order.quantities.q2 || "");
+            const newQ3 = prompt("Modifier le nombre de 3kg:", order.quantities.q3 || "");
+
+            // Update the order values only if new values were entered
+            if (newClientName !== null && newClientName.trim() !== "") {
+                order.clientName = newClientName;
+            }
+            if (newPaymentMethod !== null && newPaymentMethod.trim() !== "") {
+                order.paymentMethod = newPaymentMethod;
+            }
+            if (newQ1 !== null && newQ1.trim() !== "") {
+                order.quantities.q1 = parseInt(newQ1, 10);
+            }
+            if (newQ2 !== null && newQ2.trim() !== "") {
+                order.quantities.q2 = parseInt(newQ2, 10);
+            }
+            if (newQ3 !== null && newQ3.trim() !== "") {
+                order.quantities.q3 = parseInt(newQ3, 10);
+            }
+
+            // Recalculate the total amount based on new quantities
+            const totalAmount = (order.quantities.q1 || 0) * PRICE_12KG +
+                                (order.quantities.q2 || 0) * PRICE_6KG +
+                                (order.quantities.q3 || 0) * PRICE_3KG;
+            order.totalAmount = totalAmount;
+
+            // Save the modified orders back to localStorage
+            orders[index] = order;
+            localStorage.setItem('orders', JSON.stringify(orders));
+
+            // Reload the orders to reflect the changes
+            loadOrders();
+        }
+
+        function deleteOrder(rowId) {
+            if (confirm("Êtes-vous sûr de vouloir supprimer cette commande ?")) {
+                const orders = JSON.parse(localStorage.getItem('orders')) || [];
+                const updatedOrders = orders.filter(order => {
+                    const orderId = order.dateTime ? `order_${order.dateTime.replace(/[\W_]+/g, '')}` : null;
+                    return orderId !== rowId;
+                });
+                localStorage.setItem('orders', JSON.stringify(updatedOrders));
+                loadOrders(); // Reload the cards after deletion
+            }
+        }
+
+        // Load orders when the page loads
+        window.onload = loadOrders;
+    </script>
+</body>
+
+</html>
